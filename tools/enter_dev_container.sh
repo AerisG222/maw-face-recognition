@@ -1,11 +1,15 @@
 #!/bin/bash
 
 src=$(pwd)
+facedb=~/faces
+facetests=~/faces_test
 
 podman run \
     -it \
     --rm \
     -v "${src}/src":/src \
+    -v "${facedb}":/facedb \
+    -v "${facetests}":/facetests \
     --hooks-dir=/usr/share/containers/oci/hooks.d/ \
     --security-opt label=disable \
-    nvcr.io/nvidia/tensorflow:21.06-tf2-py3
+    maw-facerec
