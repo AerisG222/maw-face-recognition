@@ -1,8 +1,7 @@
 #!/bin/bash
-
-modeldir=~/faces_model_weights
-
-models=(
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+MODEL_DIR="${SCRIPT_DIR}/faces_model_weights"
+MODELS=(
     "age_model_weights.h5"
     "arcface_weights.h5"
     "deepid_keras_weights.h5"
@@ -16,12 +15,16 @@ models=(
     "vgg_face_weights.h5"
 )
 
-pushd "${modeldir}"
+if [ ! -d "${MODEL_DIR}" ]; then
+    mkdir "${MODEL_DIR}"
+fi
 
-for model in ${models[@]}
+pushd "${MODEL_DIR}"
+
+for MODEL in ${MODELS[@]}
 do
-    if [ ! -f "${model}" ]; then
-        curl -JLO "https://github.com/serengil/deepface_models/releases/download/v1.0/${model}"
+    if [ ! -f "${MODEL}" ]; then
+        curl -JLO "https://github.com/serengil/deepface_models/releases/download/v1.0/${MODEL}"
     fi
 done
 

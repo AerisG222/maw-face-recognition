@@ -4,3 +4,6 @@ RUN apt-get update
 RUN apt-get upgrade -y
 RUN apt-get install -y python3-opencv
 RUN pip install deepface
+
+RUN mkdir -p /root/.deepface/weights
+COPY faces_model_weights/*.h5 /root/.deepface/weights/
