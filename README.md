@@ -10,6 +10,31 @@
 6. `sudo chcon -t container_file_t /dev/nvidia*` to relax selinux
 7. step 3 now works!
 
+### Prepare Custom Image
+
+This will prepare an image based off the nvidia image containing the tools we will use.
+Currently, there is an issue when running the `buildah` command below as a rootless user.
+This error said something about an invalid device link, and after some googling, came across
+the following workaround:
+
+Go to the following page, then scroll to the bottom for the item labeled:
+[Rootless buildah bud fails when using OverlayFS](https://github.com/containers/buildah/blob/main/troubleshooting.md#6-rootless-buildah-bud-fails-when-using-overlayfs)
+
+To fix, create the file `~/.config/containers/storage.conf` and add the following to it:
+
+```ini
+[storage]
+# Default Storage Driver, Must be set for proper operation.
+driver = "overlay"
+
+[storage.options]
+# Storage options to be passed to underlying storage drivers
+mount_program = "/usr/bin/fuse-overlayfs"
+```
+
+After that, run `tools/create_base_dev_image.sh` and the buildah command worked.  Once that is done,
+you will have a local image named `maw-facerec` that can be used.
+
 ## Dev
 
 Run the dev container, with source from this project mounted in /src:
