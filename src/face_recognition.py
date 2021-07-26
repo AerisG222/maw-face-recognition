@@ -25,7 +25,7 @@ def align_face_image(face_info, face_image):
     mouth_right = landmarks['mouth_right']
     mouth_left = landmarks['mouth_left']
 
-    return postprocess.alignment_procedure(face_image, left_eye, right_eye)
+    return postprocess.alignment_procedure(face_image, right_eye, left_eye)
 
 # adapted from extract_faces at https://github.com/serengil/retinaface/blob/master/retinaface/RetinaFace.py
 def get_aligned_faces_in_image(filename):
