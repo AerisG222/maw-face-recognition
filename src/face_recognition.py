@@ -39,7 +39,7 @@ def main():
             for face in faces:
                 print(f'  - trying to identify face {i}')
 
-                found_face = DeepFace.find(face, '/facedb', model = recognizer_model, enforce_detection = False)
+                found_face = DeepFace.find(face, '/facedb', model = recognizer_model, model_name = recognizer, enforce_detection = False)
 
                 if len(found_face) == 0:
                     unk = build_unknown_filename(imgfile, i)
