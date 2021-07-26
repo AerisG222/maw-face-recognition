@@ -19,7 +19,7 @@ def build_unknown_filename(filename, facenum):
     unk = filename \
         .replace('/', '_') \
         .replace('.jpg', f'_{facenum}.jpg') \
-        [1 : :]
+        [1:]
 
     return os.path.join(dir_unknown_faces, unk)
 
