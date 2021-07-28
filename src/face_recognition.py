@@ -58,9 +58,9 @@ def find_faces_in_directory(dir, files):
 
 def find_faces_in_file(image_path):
     face_results = []
-    print(f'Processing {image_path}...')
+    print(f'Processing {image_path}...', flush = True)
     faces = get_aligned_faces_in_image(image_path)
-    print(f'  - found {len(faces)} face(s)')
+    print(f'  - found {len(faces)} face(s)', flush = True)
     face_results += get_face_details(image_path, faces)
 
     return face_results
@@ -69,7 +69,7 @@ def get_face_details(image_path, aligned_faces):
     face_results = []
 
     for key in aligned_faces:
-        print(f'  - trying to identify face {key}')
+        print(f'  - trying to identify face {key}', flush = True)
         current_face = aligned_faces[key]
         face_image = current_face['aligned_face']
         found_face = DeepFace.find(face_image, dir_known_faces, model = recognizer_model, model_name = recognizer, enforce_detection = False)
@@ -115,7 +115,7 @@ def main():
         if not root.endswith('md'):
             continue
 
-        print(root)
+        print(f'*** [{root}] ***', flush = True)
         face_details = find_faces_in_directory(root, files)
         df = pd.DataFrame(face_details)
         outfile = get_report_filename(root)
