@@ -7,9 +7,13 @@ from retinaface.commons import postprocess
 from face_info import FaceInfo
 
 dir_known_faces = '/face_db'
-dir_image_root = '/face_tests'
 dir_found_faces = '/faces_found'
 dir_unknown_faces = '/faces_unknown'
+dir_test_images = '/test_images'
+dir_real_images = '/real_images/2021'
+
+# test/live toggle
+dir_image_root = dir_test_images
 
 
 def build_unknown_filename(filename, facenum):
@@ -69,6 +73,10 @@ def get_face_details(image_path, aligned_faces):
     face_results = []
 
     for key in aligned_faces:
+        if len(key) == 0:
+            print('  - invalid face - skipping')
+            continue
+
         print(f'  - trying to identify face {key}', flush = True)
         current_face = aligned_faces[key]
         face_image = current_face['aligned_face']
