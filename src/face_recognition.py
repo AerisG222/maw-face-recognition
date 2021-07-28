@@ -112,6 +112,10 @@ def get_report_filename(dir):
 
 def main():
     for root, dirs, files in os.walk(dir_image_root):
+        if not root.endswith('md'):
+            continue
+
+        print(root)
         face_details = find_faces_in_directory(root, files)
         df = pd.DataFrame(face_details)
         outfile = get_report_filename(root)
