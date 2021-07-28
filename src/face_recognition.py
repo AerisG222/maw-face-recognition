@@ -1,12 +1,15 @@
 import os
 import cv2
-from retinaface import RetinaFace
+import pandas as pd
 from deepface import DeepFace
+from retinaface import RetinaFace
 from retinaface.commons import postprocess
+from face_info import FaceInfo
 
-dir_known_faces = '/facedb'
-dir_image_root = '/facetests'
-dir_unknown_faces = '/faces_unkown'
+dir_known_faces = '/face_db'
+dir_image_root = '/face_tests'
+dir_found_faces = '/faces_found'
+dir_unknown_faces = '/faces_unknown'
 
 
 def build_unknown_filename(filename, facenum):
@@ -41,31 +44,80 @@ def get_aligned_faces_in_image(filename):
 
     return faces
 
+def get_person_name_from_file(known_face_path):
+    return known_face_path.split('/')[-2].replace('_', ' ')
+
+def find_faces_in_directory(dir, files):
+    face_results = []
+
+    for file in files:
+        image_path = os.path.join(dir, file)
+        face_results += find_faces_in_file(image_path)
+
+    return face_results
+
+def find_faces_in_file(image_path):
+    face_results = []
+    print(f'Processing {image_path}...')
+    faces = get_aligned_faces_in_image(image_path)
+    print(f'  - found {len(faces)} face(s)')
+    face_results += get_face_details(image_path, faces)
+
+    return face_results
+
+def get_face_details(image_path, aligned_faces):
+    face_results = []
+
+    for key in aligned_faces:
+        print(f'  - trying to identify face {key}')
+        current_face = aligned_faces[key]
+        face_image = current_face['aligned_face']
+        found_face = DeepFace.find(face_image, dir_known_faces, model = recognizer_model, model_name = recognizer, enforce_detection = False)
+
+        recognized_person_db_file = ''
+        recognized_person_distance = None
+        recognized_person_name = ''
+
+        if len(found_face) > 0:
+            recognized_person_db_file = found_face.iloc[0,0]
+            recognized_person_distance = found_face.iloc[0,1]
+            recognized_person_name = get_person_name_from_file(recognized_person_db_file)
+        else:
+            unk = build_unknown_filename(image_path, key)
+            cv2.imwrite(unk, face_image)
+
+        height, width, channels = cv2.imread(image_path).shape
+        face_left, face_top, face_right, face_bottom = current_face['facial_area']
+        face_results.append(FaceInfo(
+            image_path,
+            width,
+            height,
+            face_top,
+            face_bottom,
+            face_left,
+            face_right,
+            current_face['score'],
+            recognized_person_db_file,
+            recognized_person_distance,
+            recognized_person_name,
+            len(recognized_person_name) > 0
+        ))
+
+    return face_results
+
+def get_report_filename(dir):
+    filename = dir[1:].replace('/', '_') + '.csv'
+
+    return os.path.join(dir_found_faces, filename)
+
 def main():
-    #detection_models = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface']
-    recognition_models = ['VGG-Face', 'Facenet', 'Facenet512', 'OpenFace', 'DeepFace', 'DeepID', 'ArcFace', 'Dlib']
-    #detector = detection_models[4]
-    recognizer = recognition_models[6]
-    recognizer_model = DeepFace.build_model(recognizer)
-
     for root, dirs, files in os.walk(dir_image_root):
-        for file in files:
-            imgfile = os.path.join(root, file)
+        face_details = find_faces_in_directory(root, files)
+        df = pd.DataFrame(face_details)
+        outfile = get_report_filename(root)
+        df.to_csv(outfile, index_label = 'id')
 
-            print(f'Processing {imgfile}...')
-
-            faces = get_aligned_faces_in_image(imgfile)
-
-            print(f'  - found {len(faces)} face(s)')
-
-            for key in faces:
-                print(f'  - trying to identify face {key}')
-
-                faceimg = faces[key]['aligned_face']
-                found_face = DeepFace.find(faceimg, '/facedb', model = recognizer_model, model_name = recognizer, enforce_detection = False)
-
-                if len(found_face) == 0:
-                    unk = build_unknown_filename(imgfile, key)
-                    cv2.imwrite(unk, faceimg)
+recognizer = 'ArcFace'
+recognizer_model = DeepFace.build_model(recognizer)
 
 main()
