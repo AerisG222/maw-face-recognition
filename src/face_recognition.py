@@ -10,10 +10,10 @@ dir_known_faces = '/face_db'
 dir_found_faces = '/faces_found'
 dir_unknown_faces = '/faces_unknown'
 dir_test_images = '/test_images'
-dir_real_images = '/real_images/2021'
+dir_real_images = '/real_images/2021/memorial_day'
 
 # test/live toggle
-dir_image_root = dir_test_images
+dir_image_root = dir_real_images
 
 
 def build_unknown_filename(filename, facenum):
@@ -42,8 +42,8 @@ def get_aligned_faces_in_image(filename):
     if type(faces) == dict:
         for key in faces:
             face_info = faces[key]
-            facial_area = face_info['facial_area']
-            face_img = img[facial_area[1]: facial_area[3], facial_area[0]: facial_area[2]]
+            left, top, right, bottom = face_info['facial_area']
+            face_img = img[top:bottom, left:right]
             face_info['aligned_face'] = align_face_image(face_info, face_img)
 
     return faces
