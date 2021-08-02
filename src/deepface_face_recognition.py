@@ -6,9 +6,10 @@ from retinaface import RetinaFace
 from retinaface.commons import postprocess
 from face_info import FaceInfo
 
-dir_known_faces = '/face_db'
-dir_found_faces = '/faces_found'
-dir_unknown_faces = '/faces_unknown'
+dir_root = '/deepface'
+dir_known_faces = os.path.join(dir_root, 'face_db')
+dir_found_faces = os.path.join(dir_root, 'faces_found')
+dir_unknown_faces = os.path.join(dir_root, 'faces_unknown')
 dir_test_images = '/test_images'
 dir_real_images = '/real_images/2021/memorial_day'
 
