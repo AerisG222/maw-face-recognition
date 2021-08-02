@@ -133,4 +133,5 @@ def main():
 recognizer = 'ArcFace'
 recognizer_model = DeepFace.build_model(recognizer)
 
-main()
+if __name__ == "__main__":
+    main()

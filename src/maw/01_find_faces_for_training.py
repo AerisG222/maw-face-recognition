@@ -106,4 +106,5 @@ def main():
     outfile = os.path.join(output_dir, '_report.csv')
     df.to_csv(outfile, index_label = 'id')
 
-main()
+if __name__ == "__main__":
+    main()
