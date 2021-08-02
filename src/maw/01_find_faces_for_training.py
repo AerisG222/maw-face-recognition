@@ -1,7 +1,6 @@
 import os
 import cv2
 import math
-import uuid
 import pandas as pd
 from retinaface import RetinaFace
 from training_face import TrainingFace
@@ -70,7 +69,7 @@ def extract_training_faces_in_file(image_path):
             if(len(face_img) == 0):
                 continue
 
-            filename = str(uuid.uuid4()) + '.jpg'
+            filename = str(image_path[1:].replace("/", "_"))
             outfile = os.path.join(output_dir, filename)
             cv2.imwrite(outfile, face_img)
             face_results += TrainingFace(
