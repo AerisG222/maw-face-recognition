@@ -5,7 +5,7 @@ import pandas as pd
 from retinaface import RetinaFace
 from training_face import TrainingFace
 
-image_dir = '/real_images/2021/hakata_ramen'
+image_dir = '/real_images/2021'
 image_size_to_scan = 'lg'
 min_dimension = 420
 resize_dimension = 299  # (299, 299, 3) is expected shape for Xception
