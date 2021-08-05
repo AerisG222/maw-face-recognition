@@ -5,7 +5,7 @@ import pandas as pd
 from retinaface import RetinaFace
 from training_face import TrainingFace
 
-image_dir = '/real_images/2021/'
+image_dir = '/real_images/2021/hakata_ramen'
 image_size_to_scan = 'lg'
 min_dimension = 420
 resize_dimension = 299  # (299, 299, 3) is expected shape for Xception
@@ -16,9 +16,11 @@ def extract_training_faces_in_directory(dir, files):
 
     for file in files:
         image_path = os.path.join(dir, file)
-        face_results += extract_training_faces_in_file(image_path)
+        face_results.extend(extract_training_faces_in_file(image_path))
 
-    return face_results
+    df = pd.DataFrame.from_records(face_results, columns = TrainingFace._fields)
+
+    return df
 
 def get_square_face(img, top, bottom, left, right):
     width = abs(right - left)
@@ -72,7 +74,7 @@ def extract_training_faces_in_file(image_path):
             filename = str(image_path[1:].replace("/", "_"))
             outfile = os.path.join(output_dir, filename)
             cv2.imwrite(outfile, face_img)
-            face_results += TrainingFace(
+            face_results.append(TrainingFace(
                 image_path,
                 outfile,
                 key,
@@ -81,7 +83,7 @@ def extract_training_faces_in_file(image_path):
                 height,
                 abs(new_right - new_left),
                 abs(new_top - new_bottom)
-            )
+            ))
 
     return face_results
 
@@ -90,20 +92,37 @@ def get_report_filename(dir):
 
     return os.path.join(output_dir, filename)
 
+def load_report(report_path):
+    if(os.path.exists(report_path)):
+        df = pd.read_csv(report_path)
+    else:
+        df = pd.DataFrame(columns=TrainingFace._fields)
+
+    return df
+
+def has_processed_directory(df, dir):
+    return df['source_image_path'] \
+        .transform(lambda x: os.path.dirname(x)) \
+        .isin([dir]) \
+        .any()
+
 def main():
-    df = pd.DataFrame()
+    report_path = os.path.join(output_dir, '_report.csv')
+    df = load_report(report_path)
 
     for root, dirs, files in os.walk(image_dir):
         if not root.endswith(image_size_to_scan):
             continue
 
+        if has_processed_directory(df, root):
+            print(f'*** skipping [{root}] - already processed ***', flush = True)
+            continue
+
         print(f'*** scanning [{root}]... ***', flush = True)
 
         face_details = extract_training_faces_in_directory(root, files)
-        df = df.append(pd.DataFrame(face_details))
-
-    outfile = os.path.join(output_dir, '_report.csv')
-    df.to_csv(outfile, index_label = 'id')
+        df = df.append(face_details)
+        df.to_csv(report_path, index = False)
 
 if __name__ == "__main__":
     main()
