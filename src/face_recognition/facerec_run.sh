@@ -1,6 +1,4 @@
 #!/bin/bash
-pip install face_recognition
-
 face_recognition \
     --show-distance True \
     --tolerance 0.4 \

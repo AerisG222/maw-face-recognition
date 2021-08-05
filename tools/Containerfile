@@ -3,7 +3,7 @@ FROM nvcr.io/nvidia/tensorflow:21.06-tf2-py3
 RUN apt-get update
 RUN apt-get upgrade -y
 RUN apt-get install -y python3-opencv
-RUN pip install deepface
+RUN pip install deepface face_recognition
 
 RUN mkdir -p /root/.deepface/weights
 COPY faces_model_weights/*.h5 /root/.deepface/weights/
