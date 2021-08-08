@@ -61,3 +61,4 @@ and eventually incorporated into the photos application.
 - https://www.mdpi.com/1999-5903/13/7/164
 - https://machinelearningmastery.com/how-to-perform-face-recognition-with-vggface2-convolutional-neural-network-in-keras/
 - https://keras.io/guides/transfer_learning/
+- https://medium.com/analytics-vidhya/face-recognition-with-vgg-face-in-keras-96e6bc1951d5
