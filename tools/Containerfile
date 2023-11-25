@@ -1,4 +1,4 @@
-FROM nvcr.io/nvidia/tensorflow:21.06-tf2-py3 as build
+FROM nvcr.io/nvidia/tensorflow:23.10-tf2-py3 as build
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update
@@ -9,12 +9,13 @@ COPY download_deepface_weights.sh /root
 RUN /root/download_deepface_weights.sh
 
 
-FROM nvcr.io/nvidia/tensorflow:21.06-tf2-py3
+FROM nvcr.io/nvidia/tensorflow:23.10-tf2-py3
 
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update
 RUN apt-get upgrade -y
 RUN apt-get install -y python3-opencv
-RUN pip install deepface face_recognition
+RUN pip install deepface
 
 RUN mkdir -p /root/.deepface/weights
 COPY --from=build /root/faces_model_weights/*.h5 /root/.deepface/weights/
