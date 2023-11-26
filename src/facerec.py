@@ -24,6 +24,13 @@ from deepface import DeepFace
 #  - yunet
 #  - fastmtcnn
 
+# DISTANCE METRICS
+# - cosine
+# - euclidean
+# - euclidean_l2
+
+# suggested: facenet, mtcnn, euclidean:
+# https://github.com/serengil/deepface/issues/676
 def recognizeFaces(inputImage, faceDbDir):
     return pd.concat(
         DeepFace.find(
@@ -31,6 +38,8 @@ def recognizeFaces(inputImage, faceDbDir):
             db_path = faceDbDir,
             model_name = "Facenet512",
             detector_backend = "mtcnn",
-            enforce_detection = False
+            enforce_detection = False,
+            distance_metric = "euclidean_l2",
+            silent = True
         )
     )
