@@ -128,3 +128,8 @@ podman run -it \
            localhost/maw-facerec:latest \
            python /mnt/scripts/test.py
 ```
+
+## Notes
+
+If you get NUMA warnings, see the following:
+https://stackoverflow.com/questions/44232898/memoryerror-in-tensorflow-and-successful-numa-node-read-from-sysfs-had-negativ
