@@ -2,6 +2,7 @@ import concurrent.futures
 import os
 import sys
 import time
+import cv2
 import pandas as pd
 import facerec
 
@@ -31,7 +32,11 @@ def verify_args(faceDbDir, inputDir, outfile):
 
     return isValid
 
-def addInputImageToDataFrame(file, df):
+def addMetadata(file, df):
+    height, width, channels = cv2.imread(file).shape
+
+    df['image_height'] = height
+    df['image_width'] = width
     df['photo'] = file
 
 def runDetection(file, faceDbDir):
@@ -41,7 +46,7 @@ def runDetection(file, faceDbDir):
     if df.size == 0:
         return pd.DataFrame()
 
-    addInputImageToDataFrame(file, df)
+    addMetadata(file, df)
 
     # matches with index 0 are the best match
     # we pass [0] rather than 0 to identify the best cases so that when there is
