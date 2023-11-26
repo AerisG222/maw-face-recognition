@@ -39,7 +39,7 @@ def recognizeFaces(inputImage, faceDbDir):
             model_name = "Facenet512",
             detector_backend = "mtcnn",
             enforce_detection = False,
-            distance_metric = "euclidean_l2",
+            distance_metric = "cosine",
             silent = True
         )
     )
