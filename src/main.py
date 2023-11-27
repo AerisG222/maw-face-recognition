@@ -61,7 +61,7 @@ def runDetections(faceDbDir, inputDir, outfile):
     resultDf = pd.DataFrame()
 
     for root, dirs, files in os.walk(inputDir):
-        print(prefix(f"Processing photos in directory: {root}"))
+        print(prefix(f"Processing {len(files)} photos in directory: {root}"))
 
         start_time = time.time()
         filenames = list(map(lambda f: f"{root}/{f}", files))
@@ -80,7 +80,9 @@ def runDetections(faceDbDir, inputDir, outfile):
                 elif not df.empty:
                     resultDf = pd.concat([resultDf, df])
 
-        print(prefix(f"    Took: {round(time.time() - start_time, 2)} seconds"))
+        seconds = time.time() - start_time
+
+        print(prefix(f"  Time: {round(seconds, 2)}s, Avg: {round(seconds / len(files), 2)}s/photo"))
 
     with open(outfile, "w") as csv:
         csv.write(resultDf.to_csv())
