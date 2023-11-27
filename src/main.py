@@ -6,28 +6,31 @@ import cv2
 import pandas as pd
 import facerec
 
+def prefix(s):
+    return f"* {s}"
+
 def show_usage():
-    print("A small utility to perform face recognition against photos and a custom face database")
-    print("")
-    print("Usage: python main.py <face_database_dir> <input_dir> <outfile>")
-    print("Where:")
-    print("    - face_database_dir: directory containing organized sample images of known people")
-    print("    - input_dir: directory containing images to try to identify faces")
-    print("    - outfile: full path to csv to write")
+    print(prefix("A small utility to perform face recognition against photos and a custom face database"))
+    print(prefix(""))
+    print(prefix("Usage: python main.py <face_database_dir> <input_dir> <outfile>"))
+    print(prefix("Where:"))
+    print(prefix("    - face_database_dir: directory containing organized sample images of known people"))
+    print(prefix("    - input_dir: directory containing images to try to identify faces"))
+    print(prefix("    - outfile: full path to csv to write"))
 
 def verify_args(faceDbDir, inputDir, outfile):
     isValid = True
 
     if not os.path.exists(faceDbDir):
-        print(f"Face Database Directory [{faceDbDir}] does not exist!  Exiting")
+        print(prefix(f"Face Database Directory [{faceDbDir}] does not exist!  Exiting"))
         isValid = False
 
     if not os.path.exists(inputDir):
-        print(f"Input image directory [{inputDir}] does not exist!  Exiting")
+        print(prefix(f"Input image directory [{inputDir}] does not exist!  Exiting"))
         isValid = False
 
     if os.path.exists(outfile):
-        print(f"Output file [{outfile}] exists!  Exiting")
+        print(prefix(f"* Output file [{outfile}] exists!  Exiting"))
         isValid = False
 
     return isValid
@@ -57,13 +60,10 @@ def runDetection(file, faceDbDir):
 def runDetections(faceDbDir, inputDir, outfile):
     resultDf = pd.DataFrame()
 
-    print(inputDir)
-
-    start_time = time.time()
-
     for root, dirs, files in os.walk(inputDir):
-        print(f"Processing photos in directory: {root}")
+        print(prefix(f"Processing photos in directory: {root}"))
 
+        start_time = time.time()
         filenames = list(map(lambda f: f"{root}/{f}", files))
         faceDbArgs = [faceDbDir] * len(filenames)
 
@@ -80,7 +80,7 @@ def runDetections(faceDbDir, inputDir, outfile):
                 elif not df.empty:
                     resultDf = pd.concat([resultDf, df])
 
-    print("--- %s seconds ---" % (time.time() - start_time))
+        print(prefix(f"    Took: {round(time.time() - start_time, 2)} seconds"))
 
     print(resultDf.to_csv())
 
