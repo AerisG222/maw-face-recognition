@@ -1,3 +1,5 @@
+tools/faces_model_weights
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
