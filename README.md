@@ -133,3 +133,11 @@ podman run -it \
 
 If you get NUMA warnings, see the following:
 https://stackoverflow.com/questions/44232898/memoryerror-in-tensorflow-and-successful-numa-node-read-from-sysfs-had-negativ
+https://gist.github.com/zrruziev/b93e1292bf2ee39284f834ec7397ee9f
+
+```
+lspci | grep -i nvidia
+ls /sys/bus/pci/devices/
+cat /sys/bus/pci/devices/0000\:09\:00.0/numa_node
+sudo echo 0 | sudo tee -a /sys/bus/pci/devices/0000\:09\:00.0/numa_node
+```
