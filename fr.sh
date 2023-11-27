@@ -35,9 +35,8 @@ facerec() {
     local MOUNT_DIR=$(build_mountdir "${DIR}")
     local OUTFILE=$(build_outfile "${DIR}")
 
-    if [ -d "${OUTFILE}" ]; then
-        # this directory has already been processed, skip it
-        exit
+    if [ -f "${RESULT_DIR}/${OUTFILE}" ]; then
+        return
     fi
 
     podman run \
