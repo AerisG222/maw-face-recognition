@@ -82,7 +82,8 @@ def runDetections(faceDbDir, inputDir, outfile):
 
         print(prefix(f"    Took: {round(time.time() - start_time, 2)} seconds"))
 
-    print(resultDf.to_csv())
+    with open(outfile, "w") as csv:
+        csv.write(resultDf.to_csv())
 
 if __name__ == '__main__':
     if len(sys.argv) != 4 :
