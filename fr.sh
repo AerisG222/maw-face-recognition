@@ -3,6 +3,7 @@ SCRIPT_DIR=~/git/maw-face-recognition/src
 FACEDB_DIR=~/maw_face_recognition/face_db
 RESULT_DIR=~/maw_face_recognition/results
 IMGROOT=/srv/www/website_assets/images
+EXTRACT_FACES=y
 
 ESCAPE_PATH_FOR_REGEX='s/\//\\\//g'
 IMGDIRS=$(find $IMGROOT -type d -name md)
@@ -49,7 +50,7 @@ facerec() {
         --volume "${DIR}":"${MOUNT_DIR}" \
         --volume "${RESULT_DIR}":/mnt/results \
         localhost/maw-facerec:latest \
-        python /mnt/scripts/main.py /mnt/facedb "${MOUNT_DIR}" /mnt/results/${OUTFILE} | grep '*'
+        python /mnt/scripts/main.py /mnt/facedb "${MOUNT_DIR}" /mnt/results/${OUTFILE} ${EXTRACT_FACES} | grep '*'
 }
 
 for DIR in ${IMGDIRS[@]}; do

@@ -18,4 +18,4 @@ podman run \
     --volume ~/maw_face_recognition/test_images:/mnt/images \
     --volume ~/maw_face_recognition/results:/mnt/results \
     localhost/maw-facerec:latest \
-    python /mnt/scripts/main.py /mnt/facedb /mnt/images /mnt/results/out1.csv | grep '*'
+    python /mnt/scripts/main.py /mnt/facedb /mnt/images /mnt/results/out1.csv y | grep '*'
